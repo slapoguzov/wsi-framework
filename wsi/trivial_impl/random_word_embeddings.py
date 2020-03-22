@@ -17,6 +17,6 @@ class RandomWordEmbeddings(WordEmbeddings):
 
         for start, end in spans:
             token = text[start:end]
-            result[Word(token, start, end-1)] = np.float_(np.random.rand(self.VECTOR_SIZE))
+            result[Word(token, start, end)] = np.float_(np.random.rand(self.VECTOR_SIZE))
         return result
 

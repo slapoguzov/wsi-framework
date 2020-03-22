@@ -15,9 +15,9 @@ class TestRandomWordEmbedding(unittest.TestCase):
         # when
         actual = self.testable.convert(text=text)
         # then
-        self.assertTrue(len(actual[Word('one', 0, 2)]) > 0)
-        self.assertTrue(len(actual[Word('two', 4, 6)]) > 0)
-        self.assertTrue(len(actual[Word('one', 8, 10)]) > 0)
+        self.assertTrue(len(actual[Word('one', 0, 3)]) > 0)
+        self.assertTrue(len(actual[Word('two', 4, 7)]) > 0)
+        self.assertTrue(len(actual[Word('one', 8, 11)]) > 0)
 
 
 if __name__ == '__main__':
