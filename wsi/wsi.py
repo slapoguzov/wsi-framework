@@ -8,6 +8,17 @@ class Word:
     start: int
     end: int
 
+    def __key(self):
+        return self.text, self.start, self.end
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        if isinstance(other, Word):
+            return self.__key() == other.__key()
+        return NotImplemented
+
 
 @dataclass
 class Sense:

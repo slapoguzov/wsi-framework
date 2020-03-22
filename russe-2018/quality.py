@@ -5,15 +5,17 @@ import argparse
 from pandas import read_csv
 from sklearn.metrics import adjusted_rand_score
 
+
 def gold_predict(df):
     """ This method assigns the gold and predict fields to the data frame. """
 
     df = df.copy()
 
-    df['gold']    = df['word'] + '_' + df['gold_sense_id']
+    df['gold'] = df['word'] + '_' + df['gold_sense_id']
     df['predict'] = df['word'] + '_' + df['predict_sense_id']
 
     return df
+
 
 def ari_per_word_weighted(df):
     """ This method computes the ARI score weighted by the number of sentences per word. """
@@ -25,7 +27,7 @@ def ari_per_word_weighted(df):
              for df_word in (df.loc[df['word'] == word],)}
 
     cumsum = sum(ari * count for ari, count in words.values())
-    total  = sum(count for _, count in words.values())
+    total = sum(count for _, count in words.values())
 
     assert total == len(df), 'please double-check the format of your data'
 
@@ -61,9 +63,9 @@ def main():
                                                  '"python quality.py data/main/wiki-wiki/train.baseline-adagram.csv"')
 
     parser.add_argument('dataset', type=argparse.FileType('r', encoding='utf-8'),
-                                   help='Path to a CSV file with the dataset in the format '
-                                        '"context_id<TAB>word<TAB>gold_sense_id<TAB>predict_sense_id'
-                                        '<TAB>positions<TAB>context". ')
+                        help='Path to a CSV file with the dataset in the format '
+                             '"context_id<TAB>word<TAB>gold_sense_id<TAB>predict_sense_id'
+                             '<TAB>positions<TAB>context". ')
     args = parser.parse_args()
     calculate_quality(args.dataset)
 
