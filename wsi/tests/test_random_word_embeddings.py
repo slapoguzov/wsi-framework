@@ -10,7 +10,6 @@ class TestRandomWordEmbedding(unittest.TestCase):
 
     def test_resolve(self):
         # given
-        word = Word("one", 0, 2)
         text = "one two one"
         # when
         actual = self.testable.convert(text=text)

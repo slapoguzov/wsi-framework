@@ -1,3 +1,6 @@
+torch
+transformers
+seaborn
 nltk
 pandas
 sklearn

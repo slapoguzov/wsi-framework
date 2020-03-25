@@ -8,8 +8,10 @@ from typing import List, Tuple
 
 from pandas import read_csv
 
+from bert.simple_bert_embeddings import SimpleBertEmbeddings
+from clustering.hierarchy_vectors_clustering import HierarchyVectorsClustering
 from quality import calculate_quality
-from trivial_impl.random_wsc import RandomWsc
+from wsc import WordSenseClustering
 from wsi import Word
 from wsi_wsc import WsiBasedWsc
 
@@ -20,14 +22,16 @@ def evaluate(dataset_fpath: TextIOWrapper, output: TextIOWrapper, sense_resolver
     for context_id, word, positions, text in list(zip(df.context_id, df.word, df.positions, df.context)):
         for position in positions.split(','):
             start, end = position.split('-')
-            word_usages.append((Word(word, start, end), text))
+            word_usages.append((Word(word, int(start), int(end)), text))
 
-    sense_resolver.fit(RandomWsc(word_usages))
+    sense_resolver.fit(WordSenseClustering(word_usages=word_usages,
+                                           word_embeddings=SimpleBertEmbeddings('data/bert_rus'),
+                                           vectors_clustering=HierarchyVectorsClustering()))
 
     for context_id, word, positions, text in list(zip(df.context_id, df.word, df.positions, df.context)):
         for position in positions.split(','):
             start, end = position.split('-')
-            sense = sense_resolver.resolve(Word(word, start, end), text)
+            sense = sense_resolver.resolve(Word(word, int(start), int(end)), text)
             df.loc[df.context_id == context_id, 'predict_sense_id'] = sense.id
 
     df.to_csv(output, sep='\t', encoding='utf-8', index=False, line_terminator='\n')

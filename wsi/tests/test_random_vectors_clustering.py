@@ -17,7 +17,6 @@ class TestRandomVectorsClustering(unittest.TestCase):
             (1, np.random.rand(self.VECTOR_SIZE)),
             (2, np.random.rand(self.VECTOR_SIZE)),
             (3, np.random.rand(self.VECTOR_SIZE))]
-        text = "one two one"
         # when
         actual = self.testable.fit(vectors)
         # then

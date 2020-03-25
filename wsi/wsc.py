@@ -17,17 +17,16 @@ class WordSenseClustering(ABC):
                  word_embeddings: WordEmbeddings,
                  vectors_clustering: VectorsClustering) -> None:
         self.word_usages = word_usages
-        self.word_senses = self.resolve()
         self.word_embeddings = word_embeddings
         self.vectors_clustering = vectors_clustering
-        self.resolve()
+        self.word_senses = self.resolve()
         super().__init__()
 
     def get_sense(self, word: Word, text: str) -> Sense:
         return self.word_senses[text][word]
 
     def resolve(self) -> Dict[str, Dict[Word, Sense]]:
-        words_texts_vectors = [(word, text, self.word_embeddings.convert(text)) for word, text in self.word_usages]
+        words_texts_vectors = [(word, text, self.word_embeddings.convert(text)[word]) for word, text in self.word_usages]
         vectors = [(i, vector) for i, (_, _, vector) in enumerate(words_texts_vectors)]
         cluster_groups = self.vectors_clustering.fit(vectors)
         result: Dict[str, Dict[Word, Sense]] = {}
