@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/wsd-framefork.iml" filepath="$PROJECT_DIR$/.idea/wsd-framefork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/wsi-framefork.iml" filepath="$PROJECT_DIR$/.idea/wsi-framefork.iml" />
     </modules>
   </component>
 </project>
