@@ -1,3 +1,4 @@
+import unicodedata
 import unittest
 
 from bert.simple_bert_embeddings import SimpleBertEmbeddings
@@ -36,7 +37,7 @@ class TestSimpleBertEmbedding(unittest.TestCase):
 
     def test_convert_special_letters(self):
         # given
-        text = "российский в россии"
+        text = "российский в ро́ссии"
         # when
         actual = self.testable.convert(text=text)
         print(actual.keys())

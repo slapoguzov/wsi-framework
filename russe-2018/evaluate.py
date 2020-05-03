@@ -50,6 +50,7 @@ def main():
                         help='Path to a result file')
     args = parser.parse_args()
     evaluate(args.dataset, args.output, WsiBasedWsc())
+    args.output.flush()
     calculate_quality(open(args.output.name, 'r', encoding='utf-8'))
 
 

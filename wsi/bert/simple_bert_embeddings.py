@@ -20,7 +20,7 @@ class SimpleBertEmbeddings(WordEmbeddings):
         self.model.eval()
 
     def convert(self, text: str) -> Dict[Word, List[float]]:
-        lower_text = text.lower().replace("й", "и").replace("ё", "е")
+        lower_text = text.lower().replace("й", "и").replace("ё", "е").replace("́", "")
         token_ids = self.tokenizer.encode(lower_text)
         print(token_ids)
 
@@ -33,6 +33,7 @@ class SimpleBertEmbeddings(WordEmbeddings):
         text_pos = 0
         prev = None
         for i, token_vec in enumerate(token_embeddings):
+            # todo: try only -12 layer: https://github.com/hanxiao/bert-as-service#q-so-which-layer-and-which-pooling-strategy-is-the-best
             # combine last 4 layers (best F1 score)
             cat_vec = torch.cat((token_vec[-1], token_vec[-2], token_vec[-3], token_vec[-4]), dim=0)
             if token_ids[i] in self.tokenizer.all_special_ids:

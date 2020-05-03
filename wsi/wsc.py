@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Optional
 
 from vector_clustering import VectorsClustering
 from word_embeddings import WordEmbeddings
@@ -26,7 +26,7 @@ class WordSenseClustering(ABC):
         return self.word_senses[text][word]
 
     def resolve(self) -> Dict[str, Dict[Word, Sense]]:
-        words_texts_vectors = [(word, text, self.word_embeddings.convert(text)[word]) for word, text in self.word_usages]
+        words_texts_vectors = [(word, text, self.get_word_vector(word, text)) for word, text in self.word_usages]
         vectors = [(i, vector) for i, (_, _, vector) in enumerate(words_texts_vectors)]
         cluster_groups = self.vectors_clustering.fit(vectors)
         result: Dict[str, Dict[Word, Sense]] = {}
@@ -37,3 +37,13 @@ class WordSenseClustering(ABC):
             else:
                 result.update({text: {word: Sense(group_id, text)}})
         return result
+
+    def get_word_vector(self, word: Word, text: str) -> List[float]:
+        vectors = self.word_embeddings.convert(text)
+        if word in vectors:
+            return vectors[word]
+        for key in vectors.keys():
+            if word.start < key.end and word.end > key.start:
+                return vectors[key]
+
+        return []
