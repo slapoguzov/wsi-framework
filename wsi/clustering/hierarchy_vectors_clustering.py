@@ -4,12 +4,39 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
+from sklearn.cluster import AgglomerativeClustering
 from vector_clustering import VectorsClustering
 
 
 class HierarchyVectorsClustering(VectorsClustering):
 
     def fit(self, vectors: [int, float]) -> [int, int]:
+        pca = PCA(n_components=2)
+        vectors_ = list(zip(*vectors))[1]
+        x_pca = pca.fit_transform(vectors_)
+        clusterModel = AgglomerativeClustering(n_clusters=3, affinity="cosine", linkage="complete")
+        cluster = clusterModel.fit_predict(vectors_)
+
+        #plot
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+        x = x_pca[:, 0]
+        y = x_pca[:, 1]
+
+        ax.scatter(x, y, c=cluster)
+
+        for i, txt in enumerate(x):
+            ax.annotate(str(i), (x[i], y[i]))
+
+
+        plt.show()
+
+
+        return [(i, label) for i, label in enumerate(cluster)]
+
+    #kmeans
+    def fit_kmeans(self, vectors: [int, float]) -> [int, int]:
         pca = PCA(n_components=2)
         vectors_ = list(zip(*vectors))[1]
         x_pca = pca.fit_transform(vectors_)
