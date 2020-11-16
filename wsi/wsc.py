@@ -1,5 +1,7 @@
 from abc import ABC
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict
+
+import numpy as np
 
 from vector_clustering import VectorsClustering
 from word_embeddings import WordEmbeddings
@@ -47,3 +49,7 @@ class WordSenseClustering(ABC):
                 return vectors[key]
 
         return []
+
+    def get_mean_vector(self, text: str) -> List[float]:
+        vectors = self.word_embeddings.convert(text)
+        return np.mean(list(vectors.values()), axis=0)
