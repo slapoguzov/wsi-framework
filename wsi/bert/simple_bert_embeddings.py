@@ -20,9 +20,9 @@ class SimpleBertEmbeddings(WordEmbeddings):
         self.model.eval()
 
     def convert(self, text: str) -> Dict[Word, List[float]]:
+        print("[bert embeddings] analyze text:", text)
         lower_text = text.lower().replace("й", "и").replace("ё", "е").replace("́", "")
         token_ids = self.tokenizer.encode(lower_text)
-        print(token_ids)
 
         encoded_layers = self.model(input_ids=torch.tensor([token_ids]))
         hidden_layers = encoded_layers[2][1:]
@@ -54,5 +54,5 @@ class SimpleBertEmbeddings(WordEmbeddings):
             text_pos = end
             prev = word
             result.update({word: cat_vec.tolist()})
-
+        #print("[bert embeddings] result:", result)
         return result

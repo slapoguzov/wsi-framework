@@ -15,7 +15,7 @@ class HierarchyVectorsClustering(VectorsClustering):
         pca = PCA(n_components=2)
         vectors_ = list(zip(*vectors))[1]
         x_pca = pca.fit_transform(vectors_)
-        clusterModel = AgglomerativeClustering(n_clusters=3, affinity="cosine", linkage="complete")
+        clusterModel = AgglomerativeClustering(n_clusters=2, affinity="cosine", linkage="complete")
         cluster = clusterModel.fit_predict(vectors_)
 
         #plot
