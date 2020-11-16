@@ -28,7 +28,7 @@ class CachingWordEmbeddings(WordEmbeddings):
     def write_to_cache(self, text: str, vectors: Dict[Word, List[float]]):
         value = json.dumps(tuple(vectors.items()), cls=WordEncoder)
         key = self.get_hash(text)
-        print("write to cache", key, text)
+        print("[cache] write to file", key, text)
         self.cache_file.write(f'{key} {value}\n')
         self.cache[key] = vectors
         pass
@@ -48,6 +48,7 @@ class CachingWordEmbeddings(WordEmbeddings):
         for line in self.cache_file.readlines():
             (key, value) = line.split(" ", 1)
             result[key] = dict(json.loads(value, object_hook=as_word))
+        print("[cache] loaded")
         return result
 
 

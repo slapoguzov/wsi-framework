@@ -1,3 +1,4 @@
+import itertools
 from abc import ABC
 from typing import List, Tuple, Dict
 
@@ -33,17 +34,19 @@ class WordSenseClustering(ABC):
         words_vectors = [(text_id, word, self.get_word_vector(word, vectors))
                          for text_id, (words, _, vectors) in enumerate(words_texts_vectors)
                          for word in words]
-        vectors = [(i, vector) for i, (_, _, vector) in enumerate(words_vectors)]
-        cluster_groups = self.vectors_clustering.fit(vectors)
         result: Dict[str, Dict[Word, Sense]] = {}
-        for i, group_id in cluster_groups:
-            (text_id, word, _) = words_vectors[i]
-            (_, text, _) = words_texts_vectors[text_id]
-            print("[wsc] assign", word, " id =", i, "to group_id", group_id, "in text", text)
-            if text in result:
-                result[text].update({word: Sense(group_id, text)})
-            else:
-                result.update({text: {word: Sense(group_id, text)}})
+        for word_text, w_v in itertools.groupby(words_vectors, lambda w_v: w_v[1].text):
+            grouped_words_vectors = list(w_v)
+            vectors = [(i, vector) for i, (_, _, vector) in enumerate(grouped_words_vectors)]
+            cluster_groups = self.vectors_clustering.fit(vectors)
+            for i, group_id in cluster_groups:
+                (text_id, word, _) = grouped_words_vectors[i]
+                (_, text, _) = words_texts_vectors[text_id]
+                print("[wsc] assign", word, " id =", i, "to group_id", group_id, "in text", text)
+                if text in result:
+                    result[text].update({word: Sense(group_id, text)})
+                else:
+                    result.update({text: {word: Sense(group_id, text)}})
         return result
 
     @staticmethod
