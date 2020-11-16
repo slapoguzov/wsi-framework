@@ -7,7 +7,7 @@ from io import TextIOWrapper
 from typing import List, Tuple
 
 from pandas import read_csv
-
+from statistics import mode
 from bert.simple_bert_embeddings import SimpleBertEmbeddings
 from clustering.hierarchy_vectors_clustering import HierarchyVectorsClustering
 from quality import calculate_quality
@@ -29,11 +29,11 @@ def evaluate(dataset_fpath: TextIOWrapper, output: TextIOWrapper, sense_resolver
                                            vectors_clustering=HierarchyVectorsClustering()))
 
     for context_id, word, positions, text in list(zip(df.context_id, df.word, df.positions, df.context)):
+        senses: List[int] = []
         for position in positions.split(','):
             start, end = position.split('-')
-            sense = sense_resolver.resolve(Word(word, int(start), int(end)), text)
-            df.loc[df.context_id == context_id, 'predict_sense_id'] = sense.id
-
+            senses.append(sense_resolver.resolve(Word(word, int(start), int(end)), text).id)
+        df.loc[df.context_id == context_id, 'predict_sense_id'] = mode(senses)
     df.to_csv(output, sep='\t', encoding='utf-8', index=False, line_terminator='\n')
 
 
