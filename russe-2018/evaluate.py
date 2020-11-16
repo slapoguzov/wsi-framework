@@ -12,6 +12,7 @@ from pandas import read_csv
 from bert.simple_bert_embeddings import SimpleBertEmbeddings
 from caching_word_embeddings import CachingWordEmbeddings
 from clustering.affinity_propagation_clustering import AffinityPropagationClustering
+from embeddings_dimension_reducer import EmbeddingsDimensionReducer
 from quality import calculate_quality
 from wsc import WordSenseClustering
 from wsi import Word
@@ -28,7 +29,10 @@ def evaluate(dataset_fpath: TextIOWrapper, output: TextIOWrapper, sense_resolver
             word_usages[text].append(Word(word, int(start), int(end)))
 
     sense_resolver.fit(WordSenseClustering(word_usages=word_usages,
-                                           word_embeddings=CachingWordEmbeddings(SimpleBertEmbeddings('data/bert_rus')),
+                                           word_embeddings=
+                                           CachingWordEmbeddings(
+                                               EmbeddingsDimensionReducer(SimpleBertEmbeddings('data/bert_rus'), 10)
+                                           ),
                                            vectors_clustering=AffinityPropagationClustering()))
 
     for context_id, word, positions, text in list(zip(df.context_id, df.word, df.positions, df.context)):

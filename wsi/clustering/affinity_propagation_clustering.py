@@ -8,7 +8,7 @@ class AffinityPropagationClustering(VectorsClustering):
 
     def fit(self, vectors: [int, float]) -> [int, int]:
         vectors_ = list(zip(*vectors))[1]
-        cluster_model = AffinityPropagation(damping=0.96, random_state=5, max_iter=10000, convergence_iter=15)
+        cluster_model = AffinityPropagation(damping=0.96, max_iter=10000, convergence_iter=15)
         cluster = cluster_model.fit_predict(vectors_)
 
         show_two_dimensions_plot(vectors_, cluster)
