@@ -54,5 +54,4 @@ class SimpleBertEmbeddings(WordEmbeddings):
             text_pos = end
             prev = word
             result.update({word: cat_vec.tolist()})
-        #print("[bert embeddings] result:", result)
         return result

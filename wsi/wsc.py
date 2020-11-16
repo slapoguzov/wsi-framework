@@ -26,7 +26,11 @@ class WordSenseClustering(ABC):
         super().__init__()
 
     def get_sense(self, word: Word, text: str) -> Sense:
-        return self.word_senses[text][word]
+        senses = self.word_senses[text]
+        if word in senses:
+            return senses[word]
+        print("warning: not found sense for", word)
+        return Sense(0)
 
     def resolve(self) -> Dict[str, Dict[Word, Sense]]:
         words_texts_vectors = [(words, text, self.word_embeddings.convert(text))
@@ -34,6 +38,7 @@ class WordSenseClustering(ABC):
         words_vectors = [(text_id, word, self.get_word_vector(word, vectors))
                          for text_id, (words, _, vectors) in enumerate(words_texts_vectors)
                          for word in words]
+        words_vectors = list(filter(lambda v: len(v[2]) > 0, words_vectors))
         result: Dict[str, Dict[Word, Sense]] = {}
         for word_text, w_v in itertools.groupby(words_vectors, lambda w_v: w_v[1].text):
             grouped_words_vectors = list(w_v)
