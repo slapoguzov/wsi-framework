@@ -3,14 +3,15 @@
 from __future__ import print_function
 
 import argparse
+from collections import Counter
 from io import TextIOWrapper
 from typing import List, Dict
-from collections import Counter
 
 from pandas import read_csv
 
 from bert.simple_bert_embeddings import SimpleBertEmbeddings
-from clustering.hierarchy_vectors_clustering import HierarchyVectorsClustering
+from caching_word_embeddings import CachingWordEmbeddings
+from clustering.affinity_propagation_clustering import AffinityPropagationClustering
 from quality import calculate_quality
 from wsc import WordSenseClustering
 from wsi import Word
@@ -27,8 +28,8 @@ def evaluate(dataset_fpath: TextIOWrapper, output: TextIOWrapper, sense_resolver
             word_usages[text].append(Word(word, int(start), int(end)))
 
     sense_resolver.fit(WordSenseClustering(word_usages=word_usages,
-                                           word_embeddings=SimpleBertEmbeddings('data/bert_rus'),
-                                           vectors_clustering=HierarchyVectorsClustering()))
+                                           word_embeddings=CachingWordEmbeddings(SimpleBertEmbeddings('data/bert_rus')),
+                                           vectors_clustering=AffinityPropagationClustering()))
 
     for context_id, word, positions, text in list(zip(df.context_id, df.word, df.positions, df.context)):
         senses: List[int] = []

@@ -39,7 +39,7 @@ class WordSenseClustering(ABC):
         for i, group_id in cluster_groups:
             (text_id, word, _) = words_vectors[i]
             (_, text, _) = words_texts_vectors[text_id]
-            print("[wsc] assign", word, "to group_id", group_id, "in text", text)
+            print("[wsc] assign", word, " id =", i, "to group_id", group_id, "in text", text)
             if text in result:
                 result[text].update({word: Sense(group_id, text)})
             else:
