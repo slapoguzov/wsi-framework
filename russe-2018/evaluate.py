@@ -4,8 +4,8 @@ from __future__ import print_function
 
 import argparse
 from io import TextIOWrapper
-from statistics import mode
 from typing import List, Dict
+from collections import Counter
 
 from pandas import read_csv
 
@@ -35,7 +35,7 @@ def evaluate(dataset_fpath: TextIOWrapper, output: TextIOWrapper, sense_resolver
         for position in positions.split(','):
             start, end = position.split('-')
             senses.append(sense_resolver.resolve(Word(word, int(start), int(end)), text).id)
-        mode_sense = mode(senses)
+        mode_sense = Counter(senses).most_common(1)[0][0]
         print("[evaluate] senses for", word, "=", senses, " mode =", mode_sense)
         df.loc[df.context_id == context_id, 'predict_sense_id'] = mode_sense
     df.to_csv(output, sep='\t', encoding='utf-8', index=False, line_terminator='\n')
